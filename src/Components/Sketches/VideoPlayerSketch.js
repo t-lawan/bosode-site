@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import Sketch from "react-p5";
 import styled from "styled-components";
 import START from "../../Assets/Videos/START.mp4";
-import BOSODE_START from "../../Assets/Videos/BOSODE_START.mp4";
+// import BOSODE_START from "../../Assets/Videos/BOSODE_START.mp4";
 import WAITING_FOR_DIVINATION from "../../Assets/Videos/WAITING_FOR_DIVINATION.mp4";
 import ENDING_ONE from "../../Assets/Videos/ENDING_ONE.mp4";
 import ENDING_TWO from "../../Assets/Videos/ENDING_TWO.mp4";
@@ -22,7 +22,7 @@ const SketchState = {
 
 const Files = {
   START: START,
-  BOSODE_START: BOSODE_START,
+  // BOSODE_START: BOSODE_START,
   WAITING_FOR_DIVINATION: WAITING_FOR_DIVINATION,
   ENDING_ONE: ENDING_ONE,
   ENDING_TWO: ENDING_TWO,
