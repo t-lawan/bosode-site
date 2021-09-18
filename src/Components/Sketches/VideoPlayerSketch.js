@@ -138,7 +138,7 @@ const VideoPlayerSketch = props => {
   let endingty = [];
 
   const preload = p5 => {
-    startVideo = p5.createVideo(Files.START);
+    startVideo = p5.createVideo(Files.BOSODE_START);
     watchingForDivination = p5.createVideo(Files.WAITING_FOR_DIVINATION);
     endingOne = p5.createVideo(Files.BOSODE_ENDING_ONE);
     endingTwo = p5.createVideo(Files.BOSODE_ENDING_TWO);
