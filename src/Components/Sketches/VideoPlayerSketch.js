@@ -608,7 +608,14 @@ const VideoPlayerSketch = props => {
 
   const drawCowrieShells = p5 => {
     cowrieShellPositions.forEach((position, index) => {
-      p5.image(cowrieShellImage, position.x, position.y, 50, 50);
+      p5.push()
+      p5.translate(position.x, position.y);
+      // p5.rotate(index * (p5.PI/cowrieShellPositions.length))
+      // p5.rotate(p5.PI/4)
+      p5.imageMode(p5.CENTER)
+      p5.image(cowrieShellImage, 0, 0, 50, 50);
+      p5.pop()
+
     });
   };
 
