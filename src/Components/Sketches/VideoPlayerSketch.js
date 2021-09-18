@@ -17,6 +17,7 @@ import ENDING_ONE_IMG from "../../Assets/Images/ENDING_ONE.png";
 import ENDING_TWO_IMG from "../../Assets/Images/ENDING_TWO.png";
 import ENDING_THREE_IMG from "../../Assets/Images/ENDING_THREE.png";
 import Font from "../../Assets/Font/VANHELSING.ttf";
+import Device from "../../Utility/Device";
 
 const SketchState = {
   START: "START",
@@ -632,23 +633,27 @@ const VideoPlayerSketch = props => {
     height = p5.windowHeight;
     p5.resizeCanvas(width, height);
   }
-
   return (
     <SketchWrapper ref={wrapperRef}>
       <LoadingPage id="p5_loading" class="loadingclass">
         <LoadingTitleWrapper>
-           <LoadingTitle> BOSODE </LoadingTitle>
+           
+            {!Device.isMobile()?  <LoadingTitle> BOSODE </LoadingTitle> : null}
+           {Device.isMobile() ? 
+           (<LoadingTitle>
+             Please view on desktop
+           </LoadingTitle>) : null}
 
         </LoadingTitleWrapper>
       </LoadingPage>
-      <Sketch
+      { !Device.isMobile() ? <Sketch
         preload={preload}
         setup={setup}
         draw={draw}
         mouseMoved={mouseMoved}
         doubleClicked={doubleClicked}
         windowResized={windowResized}
-      />
+      /> : null}
     </SketchWrapper>
   );
 };
