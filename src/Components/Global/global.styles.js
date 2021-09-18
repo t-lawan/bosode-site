@@ -1,4 +1,5 @@
 import styled, { createGlobalStyle } from "styled-components";
+import VanHelsing from '../../Assets/Font/VANHELSING.ttf'
 
 export const size = {
   mobileS: "320px",
@@ -29,20 +30,15 @@ export const Colours = {
 };
 
 export const GlobalStyle = createGlobalStyle`
+  @font-face {
+    font-family: 'VanHelsing';
+    src: url(${VanHelsing}) format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
   * {
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
-    ::-webkit-scrollbar {
-    width: 10px;
-    @media (max-width: ${size.tablet}) {
-      width: 7px;
-    }
-overflow: hidden;
-
-  }
-  ::-webkit-scrollbar-thumb {
-    background: ${Colours.dark_grey};
-  }
     }
 
 html, body {
@@ -51,7 +47,7 @@ html, body {
   width: 100%;
   -webkit-font-smoothing: antialiased;
 }
-h1,h2,h3,h4,h5,h6 {
+h1,h2,h3,h4,h5,h6,p {
     margin-left: 0;
     margin-right: 0;
     margin-top: 0;
@@ -60,6 +56,8 @@ h1,h2,h3,h4,h5,h6 {
     padding-right: 0;
     padding-top: 0;
     font-weight: 100;
+  font-family: 'VanHelsing';
+
     }
   a {
     text-decoration: underline;

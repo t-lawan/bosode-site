@@ -7,32 +7,42 @@ import WAITING_FOR_DIVINATION from "../../Assets/Videos/WAITING_FOR_DIVINATION.m
 import ENDING_ONE from "../../Assets/Videos/ENDING_ONE.mp4";
 import ENDING_TWO from "../../Assets/Videos/ENDING_TWO.mp4";
 import ENDING_THREE from "../../Assets/Videos/ENDING_THREE.mp4";
+// import BOSODE_ENDING_ONE from '../../Assets/Videos/BOSODE_ENDING_1.mp4'
+// import BOSODE_ENDING_TWO from '../../Assets/Videos/BOSODE_ENDING_2.mp4'
+// import BOSODE_ENDING_THREE from '../../Assets/Videos/BOSODE_ENDING_3.mp4'
 import COWRIE_SHELL_IMG from "../../Assets/Images/cowrie.png";
+import BAMBOO_IMG from "../../Assets/Images/bamboo.png";
 import LEATHER_IMG from "../../Assets/Images/leather.jpg";
 import ENDING_ONE_IMG from "../../Assets/Images/ENDING_ONE.png";
 import ENDING_TWO_IMG from "../../Assets/Images/ENDING_TWO.png";
 import ENDING_THREE_IMG from "../../Assets/Images/ENDING_THREE.png";
 import Font from "../../Assets/Font/VANHELSING.ttf";
+
 const SketchState = {
   START: "START",
   WAITING_FOR_DIVINATION: "WAITING_FOR_DIVINATION",
   ENDING: "ENDING",
-  MULTIPLE_ENDINGS: "MULTIPLE_ENDINGS "
+  CREDITS: "CREDITS",
+  MULTIPLE_ENDINGS: "MULTIPLE_ENDINGS",
 };
 
 const Files = {
   START: START,
-  // BOSODE_START: BOSODE_START,
+  BOSODE_START: "https://aa-2021.s3.eu-west-2.amazonaws.com/BOSODE_START.mp4",
   WAITING_FOR_DIVINATION: WAITING_FOR_DIVINATION,
   ENDING_ONE: ENDING_ONE,
+  BOSODE_ENDING_ONE: "https://aa-2021.s3.eu-west-2.amazonaws.com/BOSODE_ENDING_1.mp4",
   ENDING_TWO: ENDING_TWO,
+  BOSODE_ENDING_TWO: "https://aa-2021.s3.eu-west-2.amazonaws.com/BOSODE_ENDING_2.mp4",
   ENDING_THREE: ENDING_THREE,
+  BOSODE_ENDING_THREE: "https://aa-2021.s3.eu-west-2.amazonaws.com/BOSODE_ENDING_3.mp4",
   COWRIE_SHELL_IMG: COWRIE_SHELL_IMG,
   LEATHER: LEATHER_IMG,
   FONT: Font,
   ENDING_ONE_IMG: ENDING_ONE_IMG,
   ENDING_TWO_IMG: ENDING_TWO_IMG,
-  ENDING_THREE_IMG: ENDING_THREE_IMG
+  ENDING_THREE_IMG: ENDING_THREE_IMG,
+  BAMBOO_IMG: BAMBOO_IMG
 };
 
 const SketchWrapper = styled.div`
@@ -41,7 +51,7 @@ const SketchWrapper = styled.div`
 `;
 
 const LoadingPage = styled.div`
-  background: rgb(0, 255, 0);
+  background: rgb(0, 0, 0);
   width: 100vw;
   height: 100vh;
   position: fixed;
@@ -81,6 +91,7 @@ const VideoPlayerSketch = props => {
   let endingThree;
   let cowrieShellImage;
   let leatherBackground;
+  let bambooImage;
   let endingOneImage;
   let endingTwoImage;
   let endingThreeImage;
@@ -90,6 +101,11 @@ const VideoPlayerSketch = props => {
   let showControls = false;
   let endingVideo = 2;
   let font;
+  let textFontObj;
+  let xSpeed = 0.003;
+  let ySpeed = 0.004;
+  let fontSize = 80;
+  let creditsY = (fontSize/2) * -1;
 
   let players = [
     startVideo,
@@ -100,9 +116,11 @@ const VideoPlayerSketch = props => {
   ];
   let videoPlaying = 0;
   const states = [
+
     SketchState.START,
     SketchState.WAITING_FOR_DIVINATION,
     SketchState.ENDING,
+    SketchState.CREDITS,
     SketchState.MULTIPLE_ENDINGS
   ];
   let currentState = 0;
@@ -122,13 +140,14 @@ const VideoPlayerSketch = props => {
   const preload = p5 => {
     startVideo = p5.createVideo(Files.START);
     watchingForDivination = p5.createVideo(Files.WAITING_FOR_DIVINATION);
-    endingOne = p5.createVideo(Files.ENDING_ONE);
-    endingTwo = p5.createVideo(Files.ENDING_TWO);
-    endingThree = p5.createVideo(Files.ENDING_THREE);
+    endingOne = p5.createVideo(Files.BOSODE_ENDING_ONE);
+    endingTwo = p5.createVideo(Files.BOSODE_ENDING_TWO);
+    endingThree = p5.createVideo(Files.BOSODE_ENDING_THREE);
     endingOneImage = p5.loadImage(Files.ENDING_ONE_IMG);
     endingTwoImage = p5.loadImage(Files.ENDING_TWO_IMG);
     endingThreeImage = p5.loadImage(Files.ENDING_THREE_IMG);
     cowrieShellImage = p5.loadImage(Files.COWRIE_SHELL_IMG);
+    bambooImage = p5.loadImage(Files.BAMBOO_IMG);
     font = p5.loadFont(Files.FONT);
     leatherBackground = p5.loadImage(Files.LEATHER);
     cowrieShellImage.resize(100, 100);
@@ -153,19 +172,20 @@ const VideoPlayerSketch = props => {
     width = p5.windowWidth;
     height = p5.windowHeight;
     endingImageHeight = height / 5;
-
+    creditsY = height + fontSize
     endingOneImage.resize(0, endingImageHeight);
     endingTwoImage.resize(0, endingImageHeight);
     endingThreeImage.resize(0, endingImageHeight);
+    setupFont(p5);
 
     setupCowrieShellPosition(p5);
     setupMultipleEndings(p5);
     p5.createCanvas(width, height).parent(canvasParentRef);
     setupPlayer(p5);
-    setupFont(p5);
   };
 
   const updateStage = p5 => {
+    stopCurrentVideo(p5);
     switch (states[currentState]) {
       case SketchState.START: {
         currentState = 1;
@@ -179,6 +199,10 @@ const VideoPlayerSketch = props => {
         currentState = 3;
         break;
       }
+      case SketchState.CREDITS: {
+        currentState = 4;
+        break;
+      }
       case SketchState.MULTIPLE_ENDINGS: {
         currentState = 2;
         break;
@@ -190,12 +214,13 @@ const VideoPlayerSketch = props => {
 
   const setupFont = p5 => {
     p5.fill(255, 0, 0);
-    p5.textFont(font);
+    textFontObj = p5.textFont(font);
     p5.textSize(80);
     p5.textAlign(p5.CENTER, p5.CENTER);
   };
 
   const drawFont = (p5, text, color) => {
+    p5.textSize(80);
     p5.fill(color);
     p5.textLeading(60);
     p5.text(text, width / 2, height / 2);
@@ -217,12 +242,31 @@ const VideoPlayerSketch = props => {
         break;
       }
     }
-    players[videoPlaying].loop();
+    players[videoPlaying].play();
   };
 
   const drawWaitingForDivination = p5 => {
-    p5.background(255, 0, 0);
+    p5.background(0, 0, 0);
     p5.image(leatherBackground, 0, 0, width, height);
+
+
+    // TOP
+    p5.push()
+    p5.translate(width, 0);
+    p5.rotate(p5.PI/2);
+    p5.image(bambooImage, 0, 0, width/20, width);
+    p5.pop()
+
+    // BOTTOM
+    p5.push()
+    p5.translate(width, height - width/20);
+    p5.rotate(p5.PI/2);
+    p5.image(bambooImage, 0, 0, width/20, width);
+    p5.pop()
+
+    p5.image(bambooImage, 0, 0, width/20, height);
+    p5.image(bambooImage, width - width/20, 0, width/20, height);
+
     // cowrieShellPositions
     drawCowrieShells(p5);
     updateCowrieShellPosition(p5);
@@ -245,14 +289,6 @@ const VideoPlayerSketch = props => {
       }
       let colour = p5.color(255, 0, 0);
       drawFont(p5, text, colour);
-    }
-
-    if (p5.mouseIsPressed) {
-      if (vidEl.paused) {
-        vidEl.play();
-      } else {
-        vidEl.pause();
-      }
     }
   };
 
@@ -284,18 +320,12 @@ const VideoPlayerSketch = props => {
       return position;
     });
 
-    endingtx = endingtx.map(val => {
-      return (val += 0.002);
-    });
-    endingty = endingty.map(val => {
-      return (val += 0.002);
-    });
   };
 
   const drawMultipleEndings = p5 => {
     // updateMultipleEndings(p5)
-    p5.background(0, 255, 0);
-    let text = "DOUBLE CLICK ON IMAGE TO \n WATCH OTHER ENDINGs";
+    p5.background(0, 0, 0);
+    let text = "DOUBLE CLICK ON IMAGE TO \n WATCH OTHER ENDING";
     drawFont(p5, text, p5.color(255, 0, 0));
 
     p5.rectMode(p5.CENTER);
@@ -348,18 +378,109 @@ const VideoPlayerSketch = props => {
     }
   };
 
-  const draw = p5 => {
-    if (
-      states[currentState] == SketchState.START ||
-      states[currentState] == SketchState.ENDING
-    ) {
-      drawVideo(p5);
-    } else if (states[currentState] == SketchState.WAITING_FOR_DIVINATION) {
-      drawWaitingForDivination(p5);
-    } else if (states[currentState] == SketchState.MULTIPLE_ENDINGS) {
-      drawMultipleEndings(p5);
+  const drawCredits = (p5) => {
+    p5.textSize(fontSize);
+    p5.fill(255,0,0);
+
+    let creditsArray = [
+      "BOSODE",
+      "SIMISOLA LAWANSON",
+      " ",
+      "ORUNMILA",
+      "AKINSOLA LAWANSON",
+      " ",
+      " ",
+
+      "DIRECTOR",
+      "AKINSOLA LAWANSON",
+      " ",
+      "DIRECTOR OF PHOTOGRAHY",
+      "GEORGINA HILL",
+      " ",
+      "VFX ASSISTANT",
+      "JELENA VISKOVIC",
+      " ",
+      " ",
+      "MUSIC BY",
+      "RAYMOND SCOTT",
+      "JOHN COLTRANE",
+      "KLEIN",
+      "LIJADU SISTERS",
+      "LAURIE SPIEGEL",
+      "AKINSOLA LAWANSON",
+    ]
+    let credits = '';
+    creditsArray.forEach((line) => {
+      credits = credits + "\n" +  line.toLowerCase() ;
+    })  
+
+
+
+    let fontHeight = font.textBounds(credits, 0,0);
+    // console.log('XXX', fontHeight)
+
+    // let credits =
+    p5.clear();
+    p5.background(0, 0, 0);
+
+    p5.text(credits, width / 2, (fontHeight.h - height) + creditsY);
+    creditsY = creditsY - 10;
+
+
+
+    if((creditsY * -1) > fontHeight.h) {
+
+      updateStage(p5)
     }
+
+
+  }
+
+  const draw = p5 => {
+
+    switch(states[currentState]) {
+      case SketchState.START: {
+        drawVideo(p5);
+        break;
+      }
+      case SketchState.ENDING: {
+        drawVideo(p5);
+        break;
+      }
+      case SketchState.WAITING_FOR_DIVINATION: {
+        drawWaitingForDivination(p5);
+        break;
+      }
+      case SketchState.MULTIPLE_ENDINGS: {
+        drawMultipleEndings(p5);
+        break;
+      }
+      case SketchState.CREDITS: {
+        drawCredits(p5);
+        break;
+      }
+    }
+    // if (
+    //   states[currentState] == SketchState.START ||
+    //   states[currentState] == SketchState.ENDING
+    // ) {
+    //   drawVideo(p5);
+    // } else if (states[currentState] == SketchState.WAITING_FOR_DIVINATION) {
+    //   drawWaitingForDivination(p5);
+    // } else if (states[currentState] == SketchState.MULTIPLE_ENDINGS) {
+    //   drawMultipleEndings(p5);
+    // } 
   };
+
+
+  const stopCurrentVideo = (p5) => {
+    let vidEl = players[videoPlaying].elt;
+    console.log('VIDEO', vidEl)
+
+    if (!vidEl.paused) {
+      // vidEl.stop();
+    } 
+  }
 
   const mouseMoved = p5 => {
     if (
@@ -398,6 +519,8 @@ const VideoPlayerSketch = props => {
         switch (endingVideo) {
           // VID 1
           case 2: {
+             console.log('VIDEO ONE ', chosenEndingIndex)
+
             if (chosenEndingIndex == 0){
               endingVideo = 3;
             } else {
@@ -407,6 +530,8 @@ const VideoPlayerSketch = props => {
           }
           // VID 2
           case 3: {
+            console.log('VIDEO TWO', chosenEndingIndex)
+
             if (chosenEndingIndex == 0){
               endingVideo = 2;
             } else {
@@ -416,6 +541,8 @@ const VideoPlayerSketch = props => {
           }
           // VID 3
           case 4: {
+            console.log('VIDEO THREE', chosenEndingIndex)
+
             if (chosenEndingIndex == 0){
               endingVideo = 2;
             } else {
@@ -425,10 +552,21 @@ const VideoPlayerSketch = props => {
           }
         }
       }
+
+      console.log('ENDING VHOICE ', endingVideo)
       // endingVideo = p5.int(p5.random(2, 4));
 
-      console.log("XXX", endingVideo);
       updateStage(p5);
+    } else if ((states[currentState] == SketchState.START ||
+      states[currentState] == SketchState.ENDING)){
+          let vidEl = players[videoPlaying].elt;
+
+          if (vidEl.paused) {
+            vidEl.play();
+          } else {
+            vidEl.pause();
+          }
+
     }
   };
 
@@ -457,11 +595,14 @@ const VideoPlayerSketch = props => {
       return position;
     });
 
+    xSpeed = p5.map(p5.mouseY, 0, width, 0.005, 0.001);
+    ySpeed = p5.map(p5.mouseX, 0, width, 0.001, 0.005);
+
     tx = tx.map(val => {
-      return (val += 0.003);
+      return (val += xSpeed);
     });
     ty = ty.map(val => {
-      return (val += 0.004);
+      return (val += ySpeed);
     });
   };
 
@@ -479,12 +620,17 @@ const VideoPlayerSketch = props => {
     });
   };
 
+  const windowResized = (p5) => {
+    width = p5.windowWidth;
+    height = p5.windowHeight;
+    p5.resizeCanvas(width, height);
+  }
+
   return (
     <SketchWrapper ref={wrapperRef}>
       <LoadingPage id="p5_loading" class="loadingclass">
         <LoadingTitleWrapper>
            <LoadingTitle> BOSODE </LoadingTitle>
-           <LoadingText> loading videos</LoadingText>
 
         </LoadingTitleWrapper>
       </LoadingPage>
@@ -494,6 +640,7 @@ const VideoPlayerSketch = props => {
         draw={draw}
         mouseMoved={mouseMoved}
         doubleClicked={doubleClicked}
+        windowResized={windowResized}
       />
     </SketchWrapper>
   );
