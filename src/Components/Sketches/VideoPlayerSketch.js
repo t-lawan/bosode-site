@@ -29,14 +29,14 @@ const SketchState = {
 
 const Files = {
   START: START,
-  BOSODE_START: "https://aa-2021.s3.eu-west-2.amazonaws.com/BOSODE_START.mp4",
+  BOSODE_START: "https://d321q9os2iadt9.cloudfront.net/BOSODE_START.mp4",
   WAITING_FOR_DIVINATION: WAITING_FOR_DIVINATION,
   ENDING_ONE: ENDING_ONE,
-  BOSODE_ENDING_ONE: "https://aa-2021.s3.eu-west-2.amazonaws.com/BOSODE_ENDING_1.mp4",
+  BOSODE_ENDING_ONE: "https://d321q9os2iadt9.cloudfront.net/BOSODE_ENDING_1.mp4",
   ENDING_TWO: ENDING_TWO,
-  BOSODE_ENDING_TWO: "https://aa-2021.s3.eu-west-2.amazonaws.com/BOSODE_ENDING_2.mp4",
+  BOSODE_ENDING_TWO: "https://d321q9os2iadt9.cloudfront.net/BOSODE_ENDING_2.mp4",
   ENDING_THREE: ENDING_THREE,
-  BOSODE_ENDING_THREE: "https://aa-2021.s3.eu-west-2.amazonaws.com/BOSODE_ENDING_3.mp4",
+  BOSODE_ENDING_THREE: "https://d321q9os2iadt9.cloudfront.net/BOSODE_ENDING_3.mp4",
   COWRIE_SHELL_IMG: COWRIE_SHELL_IMG,
   LEATHER: LEATHER_IMG,
   FONT: Font,
