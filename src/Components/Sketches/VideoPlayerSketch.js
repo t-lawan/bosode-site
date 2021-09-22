@@ -695,9 +695,9 @@ const VideoPlayerSketch = props => {
             {!Device.isMobile()?  <Title> BOSODE </Title> : null}
             {!Device.isMobile()?  <LoadingTitle> Loading </LoadingTitle> : null}
            {Device.isMobile() ? 
-           (<LoadingTitle>
+           (<Title>
              Please view on desktop
-           </LoadingTitle>) : null}
+           </Title>) : null}
 
         </LoadingTitleWrapper>
       </LoadingPage>
