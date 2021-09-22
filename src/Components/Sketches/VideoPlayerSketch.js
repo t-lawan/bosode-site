@@ -283,6 +283,7 @@ const VideoPlayerSketch = props => {
   };
 
   const drawVideo = p5 => {
+    p5.background(0,0,255)
     let vidEl = players[videoPlaying].elt;
     if (vidEl.duration - vidEl.currentTime < 0.5) {
       updateStage(p5);
