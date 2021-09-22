@@ -296,6 +296,7 @@ const VideoPlayerSketch = props => {
   };
 
   const drawSeekBar = p5 => {
+    p5.push()
     let bgColor = p5.color(255,0,0, 100);
 
     // bgColor.setAlpha(100);
@@ -309,6 +310,8 @@ const VideoPlayerSketch = props => {
     let seekColor = p5.color(255,0,0,200);
     p5.fill(seekColor)
     p5.rect(0, height - 20, width * perc, 20);
+    p5.pop()
+
   }
 
   const setupMultipleEndings = p5 => {
@@ -343,6 +346,8 @@ const VideoPlayerSketch = props => {
 
   const drawMultipleEndings = p5 => {
     // updateMultipleEndings(p5)
+    p5.push()
+
     p5.background(0, 0, 0);
     let text = "DOUBLE CLICK ON IMAGE TO \n WATCH OTHER ENDING";
     drawFont(p5, text, p5.color(255, 0, 0));
@@ -395,9 +400,13 @@ const VideoPlayerSketch = props => {
         break;
       }
     }
+
+    p5.pop()
+
   };
 
   const drawCredits = (p5) => {
+    p5.push()
     p5.textSize(fontSize);
     p5.fill(255,0,0);
 
@@ -432,9 +441,6 @@ const VideoPlayerSketch = props => {
     creditsArray.forEach((line) => {
       credits = credits + "\n" +  line.toLowerCase() ;
     })  
-
-
-
     let fontHeight = font.textBounds(credits, 0,0);
     // console.log('XXX', fontHeight)
 
@@ -446,6 +452,7 @@ const VideoPlayerSketch = props => {
     creditsY = creditsY - 10;
 
 
+    p5.pop()
 
     if((creditsY * -1) > fontHeight.h) {
 
@@ -572,7 +579,6 @@ const VideoPlayerSketch = props => {
         }
       }
 
-      console.log('ENDING VHOICE ', endingVideo)
       // endingVideo = p5.int(p5.random(2, 4));
 
       updateStage(p5);
@@ -580,14 +586,35 @@ const VideoPlayerSketch = props => {
       states[currentState] == SketchState.ENDING)){
           let vidEl = players[videoPlaying].elt;
 
-          if (vidEl.paused) {
-            vidEl.play();
+          if(isWithinSeekRect(p5)){
+            console.log('HELLO')
+            let perc = p5.mouseX/width;
+            
+            
+            
+            vidEl.currentTime =  perc * vidEl.duration;
+
           } else {
-            vidEl.pause();
+            if (vidEl.paused) {
+              vidEl.play();
+            } else {
+              vidEl.pause();
+            }
           }
+
+
 
     }
   };
+
+  const isWithinSeekRect = (p5) => {
+
+    if(p5.mouseY > height - 20){
+      return true;
+    }
+
+    return false;
+  }
 
   const setupCowrieShellPosition = p5 => {
     for (let i = 0; i < 16; i++) {
