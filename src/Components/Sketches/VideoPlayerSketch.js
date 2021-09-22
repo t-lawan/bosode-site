@@ -282,16 +282,34 @@ const VideoPlayerSketch = props => {
     // p5.rectMode(p5.CENTER);
     p5.imageMode(p5.CORNER);
     p5.image(players[videoPlaying], 0, 0, width, height);
+    // drawSeekBar(p5);
 
     if (showControls) {
-      let text = "CLICK TO PLAY";
+      let text = "DOUBLE CLICK TO PLAY";
       if (!vidEl.paused) {
-        text = "CLICK TO PAUSE";
+        text = "DOUBLE CLICK TO PAUSE";
       }
       let colour = p5.color(255, 0, 0);
       drawFont(p5, text, colour);
+      drawSeekBar(p5)
     }
   };
+
+  const drawSeekBar = p5 => {
+    let bgColor = p5.color(255,0,0, 100);
+
+    // bgColor.setAlpha(100);
+
+    p5.fill(bgColor)
+    p5.noStroke()
+    p5.rect(0, height - 20, width, 20);
+
+    let vidEl = players[videoPlaying].elt;
+    let perc =  vidEl.currentTime/vidEl.duration;
+    let seekColor = p5.color(255,0,0,200);
+    p5.fill(seekColor)
+    p5.rect(0, height - 20, width * perc, 20);
+  }
 
   const setupMultipleEndings = p5 => {
     let vStart = p5.createVector(width / 3, height / 2 + height / 5);
