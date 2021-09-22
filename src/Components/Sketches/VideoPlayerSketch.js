@@ -67,7 +67,7 @@ const LoadingTitleWrapper = styled.div`
     flex-direction: column;
 `
 
-const LoadingTitle = styled.h1`
+const Title = styled.h1`
   color:red;
 /*   
   top: 50%;
@@ -75,6 +75,14 @@ const LoadingTitle = styled.h1`
   font-size: 10vw;
 `
 
+const LoadingTitle = styled.h4`
+  color:red;
+  font-size: 5vw;
+  position: absolute;
+  bottom: 0;
+
+
+`
 const LoadingText = styled.p`
   color:red;
   font-size: 5vw;
@@ -683,7 +691,8 @@ const VideoPlayerSketch = props => {
       <LoadingPage id="p5_loading" class="loadingclass">
         <LoadingTitleWrapper>
            
-            {!Device.isMobile()?  <LoadingTitle> BOSODE </LoadingTitle> : null}
+            {!Device.isMobile()?  <Title> BOSODE </Title> : null}
+            {!Device.isMobile()?  <LoadingTitle> Loading </LoadingTitle> : null}
            {Device.isMobile() ? 
            (<LoadingTitle>
              Please view on desktop
